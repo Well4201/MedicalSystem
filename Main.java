@@ -117,9 +117,12 @@ public class Main {
             }
         } while (!loggedIn);
 
+        Doctor doctor = regLogin.getCurrentDoctor();
+
         boolean working = true;
         while (working) {
-            System.out.println("\n--- Doctor Dashboard (Dr. " + regLogin.getCurrentDoctor().getUsername() + ") ---");
+            System.out.println("\n--- Doctor Dashboard (Dr. " + doctor.getUsername()
+                    + " - " + doctor.expertise() + ") ---");
             queueSystem.printQueue();
 
             if (!queueSystem.isEmpty()) {
