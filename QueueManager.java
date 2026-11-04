@@ -1,4 +1,3 @@
-// replaces QueueSystem. the active strategy decides the order
 public class QueueManager {
 
     private Patient[] queue = new Patient[1];
@@ -10,7 +9,6 @@ public class QueueManager {
         this.strategy = strategy;
     }
 
-    // switch the mode while the program is running
     public void setStrategy(QueueStrategy strategy) {
         this.strategy = strategy;
         sortQueue();
@@ -45,7 +43,6 @@ public class QueueManager {
         return front;
     }
 
-    // take a specific patient out (so the doctor can pick who to see)
     public boolean remove(Patient p) {
         int index = findIndex(p);
         if (index == -1) {
@@ -54,8 +51,6 @@ public class QueueManager {
         removeAt(index);
         return true;
     }
-
-    // put the patient at the back, no matter which mode is on
     public void hold(Patient p) {
         if (findIndex(p) == -1) {
             return;
@@ -73,7 +68,7 @@ public class QueueManager {
         return queue[0];
     }
 
-    // index starts at 0
+    
     public Patient getPatient(int index) {
         if (index < 0 || index >= size) {
             return null;
@@ -127,8 +122,6 @@ public class QueueManager {
         size--;
     }
 
-    // patients on hold always come after the ones who are not,
-    // then the strategy decides the order
     private boolean before(Patient a, Patient b) {
         if (a.onHold != b.onHold) {
             return !a.onHold;
@@ -138,8 +131,6 @@ public class QueueManager {
         }
         return strategy.goesBefore(a, b);
     }
-
-    // insertion sort
     private void sortQueue() {
         for (int i = 1; i < size; i++) {
             Patient key = queue[i];
