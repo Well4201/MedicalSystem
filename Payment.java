@@ -10,7 +10,7 @@ public class Payment {
         this.paid = 0;
     }
 
-    // fee depends on severity
+  
     public static double getFee(int severity) {
         if (severity == 3) {
             return 1000;
@@ -20,12 +20,12 @@ public class Payment {
         return 300;
     }
 
-    // pay the whole balance
+
     public void payFull() {
         paid = total;
     }
 
-    // pay part of the balance, returns false if the amount is not ok
+
     public boolean payInstallment(double amount) {
         if (amount <= 0 || amount > getBalance()) {
             return false;
