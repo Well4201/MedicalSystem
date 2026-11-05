@@ -12,7 +12,7 @@ public class QueueSystem {
             queue = temp;
         }
         int insertAt = size;
-        while (insertAt > 0 && queue[insertAt - 1].Severity < p.Severity) {
+        while (insertAt > 0 && queue[insertAt - 1].getSeverity() < p.getSeverity()) {
             queue[insertAt] = queue[insertAt - 1];
             insertAt--;
         }
@@ -59,8 +59,7 @@ public class QueueSystem {
         }
         System.out.println("Current patient queue:");
         for (int i = 0; i < size; i++) {
-            System.out.println((i + 1) + ". " + queue[i].Name + " (Age: " + queue[i].Age + ") - "
-                    + queue[i].Symptoms + " (Severity: " + queue[i].Severity + ")");
+            System.out.println((i + 1) + ". " + queue[i].getName() + " (Age: " + queue[i].getAge() + ") - " + queue[i].getSymptoms() + " (Severity: " + queue[i].getSeverity() + ")");
         }
     }
 }
