@@ -38,32 +38,10 @@ public class Main {
 
 
     public static void handlePatient(Scanner in, QueueSystem queueSystem) {
-        System.out.println("\n--- Patient Registration ---");
 
-        System.out.print("Enter your name: ");
-        String name = in.nextLine();
-
-        int age;
-        do {
-            age = readInt(in, "Enter your age: ");
-            if (age < 0) {
-                System.out.println("Age cannot be negative.");
-            }
-        } while (age < 0);
-
-        System.out.print("Enter your symptoms: ");
-        String symptoms = in.nextLine();
-
-        int severity;
-        do {
-            severity = readInt(in, "Enter severity (1 = lowest, 2 = moderate, 3 = severe): ");
-            if (severity < 1 || severity > 3) {
-                System.out.println("Severity must be 1, 2, or 3.");
-            }
-        } while (severity < 1 || severity > 3);
-
-        Patient p = new Patient(name, age, symptoms, severity);
-
+        // use the patient registration menu
+        PatientMenu patientMenu = new PatientMenu(in);
+        Patient p = patientMenu.registerPatient();
 
         boolean deciding = true;
         while (deciding) {
@@ -148,7 +126,7 @@ public class Main {
                         break;
                     }
                     Patient held = queueSystem.dequeue();
-                    System.out.println(held.Name + " has been placed on hold and moved to the back of the queue.");
+                    System.out.println(held.getName() + " has been placed on hold and moved to the back of the queue.");
                     queueSystem.enqueue(held);
                     break;
 
@@ -175,13 +153,13 @@ public class Main {
     }
 
     public static void tendPatient(Patient p) {
-        System.out.println("\n--- Tending Patient ---");
-        System.out.println("Name: " + p.Name);
-        System.out.println("Age: " + p.Age);
-        System.out.println("Symptoms: " + p.Symptoms);
-        System.out.println("Severity: " + p.Severity);
-        System.out.println("\n--- Receipt ---");
-        System.out.println("Patient " + p.Name + " has been seen by the doctor.");
-        System.out.println("Diagnosis result and receipt issued. Thank you.");
-    }
+    System.out.println("\n--- Tending Patient ---");
+    System.out.println("Name: " + p.getName());
+    System.out.println("Age: " + p.getAge());
+    System.out.println("Symptoms: " + p.getSymptoms());
+    System.out.println("Severity: " + p.getSeverity());
+    System.out.println("\n--- Receipt ---");
+    System.out.println("Patient " + p.getName() + " has been seen by the doctor.");
+    System.out.println("Diagnosis result and receipt issued. Thank you.");
+}
 }
