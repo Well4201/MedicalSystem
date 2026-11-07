@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 
+// Added from appointments.
 public abstract class Appointment {
     private final LocalDate date;
     private final Doctor doctor;

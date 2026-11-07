@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 
+// Added from appointments.
 public class FollowUpAppointment extends Appointment {
     private final Appointment previousVisit;
 

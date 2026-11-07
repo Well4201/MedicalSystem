@@ -1,6 +1,7 @@
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+// Added from appointments.
 public class ScheduledAppointment extends Appointment {
     private final LocalTime timeSlot;
 

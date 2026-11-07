@@ -1,9 +1,10 @@
 import java.util.Scanner;
 
+// Added from Payment-and-testing.
 public class PaymentMenu {
 
     public static void process(Scanner in, Patient p) {
-        Payment payment = new Payment(p.Name, Payment.getFee(p.Severity));
+        Payment payment = new Payment(p.getName(), Payment.getFee(p.getSeverity()));
         System.out.println("\n--- Payment ---");
         System.out.println("Consultation fee: " + payment.getBalance());
 

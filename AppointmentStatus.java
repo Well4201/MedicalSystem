@@ -1,3 +1,4 @@
+// Added from appointments.
 public enum AppointmentStatus {
     WAITING,
     ON_HOLD,

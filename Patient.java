@@ -7,12 +7,18 @@ public class Patient {
     private String Name;
     private int Age;
     private String Symptoms;
+    // Added for triage in Registration-and-priority.
     private int Severity;
     private boolean isSenior;
     private boolean isPWD;
     private boolean isPregnant;
     private int arrivalOrder;
     private String suggestedSpecialty;
+    // Added by Queue-strategies.
+    private int ticket;
+    private boolean onHold;
+    // Added by appointments.
+    private Appointment appointment;
 
     public Patient() {
         assignIdAndOrder();
@@ -63,6 +69,9 @@ public class Patient {
     public boolean isPregnant() { return isPregnant; }
     public int getArrivalOrder() { return arrivalOrder; }
     public String getSuggestedSpecialty() { return suggestedSpecialty; }
+    public int getTicket() { return ticket; }
+    public boolean isOnHold() { return onHold; }
+    public Appointment getAppointment() { return appointment; }
 
     // setters
     public void setName(String name) { this.Name = name; }
@@ -73,4 +82,7 @@ public class Patient {
     public void setPWD(boolean isPWD) { this.isPWD = isPWD; }
     public void setPregnant(boolean isPregnant) { this.isPregnant = isPregnant; }
     public void setSuggestedSpecialty(String specialty) { this.suggestedSpecialty = specialty; }
+    public void setTicket(int ticket) { this.ticket = ticket; }
+    public void setOnHold(boolean onHold) { this.onHold = onHold; }
+    public void setAppointment(Appointment appointment) { this.appointment = appointment; }
 }

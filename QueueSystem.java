@@ -1,3 +1,4 @@
+// Updated from Registration-and-priority.
 public class QueueSystem {
 
     private Patient[] queue = new Patient[1];

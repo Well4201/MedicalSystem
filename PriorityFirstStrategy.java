@@ -1,11 +1,12 @@
+// Added from Queue-strategies.
 public class PriorityFirstStrategy implements QueueStrategy {
 
     
     public boolean goesBefore(Patient a, Patient b) {
-        if (a.Severity != b.Severity) {
-            return a.Severity > b.Severity;
+        if (a.getSeverity() != b.getSeverity()) {
+            return a.getSeverity() > b.getSeverity();
         }
-        return a.ticket < b.ticket;
+        return a.getTicket() < b.getTicket();
     }
     public String getName() {
         return "Priority First";

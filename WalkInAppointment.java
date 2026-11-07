@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 
+// Added from appointments.
 public class WalkInAppointment extends Appointment {
 
    

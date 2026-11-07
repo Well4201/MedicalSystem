@@ -1,3 +1,4 @@
+// Added from Payment-and-testing.
 public class Payment {
 
     private String patientName;

@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
+// Added from Registration-and-priority.
 public class PatientMenu {
 
     private Scanner scanner;

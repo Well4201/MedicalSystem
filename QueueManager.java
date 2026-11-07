@@ -1,3 +1,4 @@
+// Added from Queue-strategies.
 public class QueueManager {
 
     private Patient[] queue = new Patient[1];
@@ -26,9 +27,9 @@ public class QueueManager {
             }
             queue = temp;
         }
-        p.ticket = nextTicket;
+        p.setTicket(nextTicket);
         nextTicket++;
-        p.onHold = false;
+        p.setOnHold(false);
         queue[size] = p;
         size++;
         sortQueue();
@@ -55,8 +56,8 @@ public class QueueManager {
         if (findIndex(p) == -1) {
             return;
         }
-        p.onHold = true;
-        p.ticket = nextTicket;
+        p.setOnHold(true);
+        p.setTicket(nextTicket);
         nextTicket++;
         sortQueue();
     }
@@ -96,11 +97,11 @@ public class QueueManager {
         System.out.println("Current patient queue:");
         for (int i = 0; i < size; i++) {
             String note = "";
-            if (queue[i].onHold) {
+            if (queue[i].isOnHold()) {
                 note = " [on hold]";
             }
-            System.out.println((i + 1) + ". " + queue[i].Name + " (Age: " + queue[i].Age + ") - "
-                    + queue[i].Symptoms + " (Severity: " + queue[i].Severity + ")" + note);
+            System.out.println((i + 1) + ". " + queue[i].getName() + " (Age: " + queue[i].getAge() + ") - "
+                    + queue[i].getSymptoms() + " (Severity: " + queue[i].getSeverity() + ")" + note);
         }
     }
 
@@ -114,7 +115,7 @@ public class QueueManager {
     }
 
     private void removeAt(int index) {
-        queue[index].onHold = false;
+        queue[index].setOnHold(false);
         for (int i = index; i < size - 1; i++) {
             queue[i] = queue[i + 1];
         }
@@ -123,11 +124,11 @@ public class QueueManager {
     }
 
     private boolean before(Patient a, Patient b) {
-        if (a.onHold != b.onHold) {
-            return !a.onHold;
+        if (a.isOnHold() != b.isOnHold()) {
+            return !a.isOnHold();
         }
-        if (a.onHold) {
-            return a.ticket < b.ticket;   // held patients: first held, first back in
+        if (a.isOnHold()) {
+            return a.getTicket() < b.getTicket();
         }
         return strategy.goesBefore(a, b);
     }
