@@ -1,7 +1,6 @@
 public class Doctor {
     private String password;
     private String username;
-    private String[] patients = new String[1];
     private int expertiseChoice = 1;
 
     public String expertise() {
