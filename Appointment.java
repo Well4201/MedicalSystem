@@ -3,7 +3,7 @@ import java.time.LocalDate;
 // Added from appointments.
 public abstract class Appointment {
     private final LocalDate date;
-    private final Doctor doctor;
+    private Doctor doctor;
     private AppointmentStatus status;
 
     public Appointment(LocalDate date, Doctor doctor, AppointmentStatus status) {
@@ -18,6 +18,10 @@ public abstract class Appointment {
 
     public Doctor getDoctor() {
         return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
     }
 
     public AppointmentStatus getStatus() {
@@ -35,7 +39,7 @@ public abstract class Appointment {
     public void printSummary() {
         System.out.println("Type:   " + getType());
         System.out.println("Date:   " + date);
-        System.out.println("Doctor: Dr. " + doctor.getUsername());
+        System.out.println("Doctor: " + (doctor == null ? "To be assigned" : "Dr. " + doctor.getUsername()));
         System.out.println("Status: " + status);
     }
 }

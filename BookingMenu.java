@@ -4,6 +4,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.function.Consumer;
 
 // Added from appointments.
 public class BookingMenu {
@@ -12,6 +13,7 @@ public class BookingMenu {
     private static class Booking {
         final Patient patient;
         final Appointment appointment;
+        boolean checkedIn;
 
         Booking(Patient patient, Appointment appointment) {
             this.patient = patient;
@@ -21,7 +23,15 @@ public class BookingMenu {
 
     private final List<Booking> bookings = new ArrayList<>();
 
+    public void show(Scanner in, Patient patient, Consumer<Patient> enqueuePatient) {
+        show(in, patient, null, enqueuePatient);
+    }
+
     public void show(Scanner in, Patient patient, Doctor doctor, QueueManager queue) {
+        show(in, patient, doctor, queue::enqueue);
+    }
+
+    private void show(Scanner in, Patient patient, Doctor doctor, Consumer<Patient> enqueuePatient) {
         boolean open = true;
         while (open) {
             System.out.println("\n--- Appointment Booking ---");
@@ -43,7 +53,7 @@ public class BookingMenu {
                     viewBookings(patient);
                     break;
                 case 4:
-                    checkIn(in, patient, queue);
+                    checkIn(in, patient, enqueuePatient);
                     break;
                 case 0:
                     open = false;
@@ -69,7 +79,7 @@ public class BookingMenu {
 
     private void bookFollowUp(Scanner in, Patient patient, Doctor doctor) {
         Appointment previous = patient.getAppointment();
-        if (previous == null) {
+        if (previous == null || previous.getStatus() != AppointmentStatus.COMPLETED) {
             System.out.println("No previous visit found, so a follow-up cannot be booked.");
             return;
         }
@@ -90,6 +100,9 @@ public class BookingMenu {
             if (b.patient == patient) {
                 System.out.println();
                 b.appointment.printSummary();
+                if (b.checkedIn) {
+                    System.out.println("Queue: Checked in");
+                }
                 found = true;
             }
         }
@@ -99,12 +112,13 @@ public class BookingMenu {
     }
 
     
-    private void checkIn(Scanner in, Patient patient, QueueManager queue) {
+    private void checkIn(Scanner in, Patient patient, Consumer<Patient> enqueuePatient) {
         List<Booking> todays = new ArrayList<>();
         for (Booking b : bookings) {
             if (b.patient == patient
                     && b.appointment.getDate().equals(LocalDate.now())
-                    && b.appointment.getStatus() == AppointmentStatus.WAITING) {
+                    && b.appointment.getStatus() == AppointmentStatus.WAITING
+                    && !b.checkedIn) {
                 todays.add(b);
             }
         }
@@ -116,7 +130,8 @@ public class BookingMenu {
         System.out.println("\nToday's bookings:");
         for (int i = 0; i < todays.size(); i++) {
             Appointment a = todays.get(i).appointment;
-            System.out.println((i + 1) + ". " + a.getType() + " with Dr. " + a.getDoctor().getUsername());
+            String doctor = a.getDoctor() == null ? "doctor to be assigned" : "Dr. " + a.getDoctor().getUsername();
+            System.out.println((i + 1) + ". " + a.getType() + " with " + doctor);
         }
         int pick = readInt(in, "Choose a booking (0 to cancel): ");
         if (pick < 1 || pick > todays.size()) {
@@ -125,7 +140,8 @@ public class BookingMenu {
 
         Booking chosen = todays.get(pick - 1);
         patient.setAppointment(chosen.appointment);
-        queue.enqueue(patient);
+        enqueuePatient.accept(patient);
+        chosen.checkedIn = true;
         System.out.println("Checked in. You have joined the queue.");
     }
 

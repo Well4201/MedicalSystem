@@ -31,7 +31,14 @@ public class PatientMenu {
         System.out.println("3 = Severe");
         int severity = askNumber("Enter severity (1-3): ", 1, 3);
 
-        boolean senior = askYesNo("Are you a senior citizen? (Y/N): ");
+        boolean senior;
+        if (age < 60) {
+            System.out.println("Are you a senior citizen? (Y/N): N (age is below 60)");
+            senior = false;
+        } else {
+            System.out.println("Are you a senior citizen? (Y/N): Y (age is 60 or above)");
+            senior = true;
+        }
         boolean pwd = askYesNo("Are you a person with a disability (PWD)? (Y/N): ");
         boolean pregnant = askYesNo("Are you pregnant? (Y/N): ");
 

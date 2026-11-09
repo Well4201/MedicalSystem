@@ -9,6 +9,8 @@ public class Main {
     private static final ArrayList<Patient> eyeQueue = new ArrayList<>();
     private static final ArrayList<Patient> dentalQueue = new ArrayList<>();
     private static final ArrayList<Patient> physicalQueue = new ArrayList<>();
+    private static final ArrayList<Patient> patients = new ArrayList<>();
+    private static final BookingMenu bookingMenu = new BookingMenu();
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
@@ -44,19 +46,39 @@ public class Main {
     }
 
     public static void handlePatient(Scanner in) {
-        PatientMenu patientMenu = new PatientMenu(in);
-        Patient p = patientMenu.registerPatient();
+        System.out.println("\n1.New patient\n2.Returning patient");
+        int patientChoice = readInt(in, "Enter option: ");
+        Patient p;
+        if (patientChoice == 1) {
+            PatientMenu patientMenu = new PatientMenu(in);
+            p = patientMenu.registerPatient();
+            patients.add(p);
+        } else if (patientChoice == 2) {
+            System.out.print("Enter your patient ID: ");
+            String patientId = in.nextLine().trim();
+            p = findPatient(patientId);
+            if (p == null) {
+                System.out.println("No patient found with that ID.");
+                return;
+            }
+            System.out.println("Welcome back, " + p.getName() + ".");
+        } else {
+            System.out.println("Not an option. Try again.");
+            return;
+        }
 
         boolean deciding = true;
         while (deciding) {
             System.out.println("\nPlease choose an option:");
-            System.out.println("1.Join the queue");
+            System.out.println("1.Join the queue (walk-in)");
             System.out.println("2.View current queue");
+            System.out.println("3.Book or manage appointments");
             System.out.println("0.Cancel");
             int choice = readInt(in, "Enter option: ");
 
             switch (choice) {
                 case 1:
+                    p.setAppointment(new WalkInAppointment(null));
                     enqueuePatientByExpertise(p);
                     System.out.println("You have been added to the " + getExpertiseName(getDoctorExpertise(p)) + " queue.");
                     deciding = false;
@@ -64,6 +86,10 @@ public class Main {
 
                 case 2:
                     printQueueOverview();
+                    break;
+
+                case 3:
+                    bookingMenu.show(in, p, Main::enqueuePatientByExpertise);
                     break;
 
                 case 0:
@@ -75,6 +101,15 @@ public class Main {
                     System.out.println("Not an option. Try again.");
             }
         }
+    }
+
+    private static Patient findPatient(String patientId) {
+        for (Patient patient : patients) {
+            if (patient.getPatientId().equalsIgnoreCase(patientId)) {
+                return patient;
+            }
+        }
+        return null;
     }
 
     public static void handleDoctor(Scanner in, RegLogin regLogin) {
@@ -119,6 +154,10 @@ public class Main {
                         break;
                     }
                     Patient tended = dequeuePatientForDoctor(doctor);
+                    if (tended.getAppointment() != null) {
+                        tended.getAppointment().setDoctor(doctor);
+                        tended.getAppointment().setStatus(AppointmentStatus.IN_CONSULTATION);
+                    }
                     tendPatient(tended);
                     break;
 
@@ -128,8 +167,14 @@ public class Main {
                         break;
                     }
                     Patient held = dequeuePatientForDoctor(doctor);
+                    if (held.getAppointment() != null) {
+                        held.getAppointment().setStatus(AppointmentStatus.ON_HOLD);
+                    }
                     System.out.println(held.getName() + " has been placed on hold and moved to the back of the queue.");
                     enqueuePatientByExpertise(held);
+                    if (held.getAppointment() != null) {
+                        held.getAppointment().setStatus(AppointmentStatus.WAITING);
+                    }
                     break;
 
                 case 0:
@@ -225,8 +270,15 @@ public class Main {
         for (int i = 0; i < queue.size(); i++) {
             Patient patient = queue.get(i);
             System.out.println((i + 1) + ". " + patient.getName() + " (Age: " + patient.getAge() + ") - "
-                    + patient.getSymptoms() + " (Severity: " + patient.getSeverity() + ")");
+                    + patient.getSymptoms() + " (Severity: " + patient.getSeverity() + ")"
+                    + " [Senior: " + yesNo(patient.isSenior())
+                    + ", PWD: " + yesNo(patient.isPWD())
+                    + ", Pregnant: " + yesNo(patient.isPregnant()) + "]");
         }
+    }
+
+    private static String yesNo(boolean value) {
+        return value ? "Yes" : "No";
     }
 
     private static String getExpertiseName(int expertise) {
@@ -256,10 +308,16 @@ public class Main {
         System.out.println("\n--- Tending Patient ---");
         System.out.println("Name: " + p.getName());
         System.out.println("Age: " + p.getAge());
+        System.out.println("Senior Citizen: " + yesNo(p.isSenior()));
+        System.out.println("PWD: " + yesNo(p.isPWD()));
+        System.out.println("Pregnant: " + yesNo(p.isPregnant()));
         System.out.println("Symptoms: " + p.getSymptoms());
         System.out.println("Severity: " + p.getSeverity());
         System.out.println("\n--- Receipt ---");
         System.out.println("Patient " + p.getName() + " has been seen by the doctor.");
         System.out.println("Diagnosis result and receipt issued. Thank you.");
+        if (p.getAppointment() != null) {
+            p.getAppointment().setStatus(AppointmentStatus.COMPLETED);
+        }
     }
 }
