@@ -4,8 +4,13 @@ import java.util.Scanner;
 public class PaymentMenu {
 
     public static void process(Scanner in, Patient p) {
-        Payment payment = new Payment(p.getName(), Payment.getFee(p.getSeverity()));
+        Payment payment = p.getPayment();
+        if (payment == null) {
+            payment = new Payment(p.getName(), Payment.getFee(p.getSeverity()));
+            p.setPayment(payment);
+        }
         System.out.println("\n--- Payment ---");
+        System.out.println("Patient: " + p.getName());
         System.out.println("Consultation fee: " + payment.getBalance());
 
         boolean paying = true;
@@ -33,6 +38,7 @@ public class PaymentMenu {
                     break;
 
                 case 0:
+                    payment.setPaymentPlan("Pay later");
                     paying = false;
                     break;
 

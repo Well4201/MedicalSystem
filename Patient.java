@@ -14,6 +14,7 @@ public class Patient {
     private boolean isPregnant;
     private int arrivalOrder;
     private String suggestedSpecialty;
+    private Payment payment;
     // Added by Queue-strategies.
     private int ticket;
     private boolean onHold;
@@ -22,6 +23,7 @@ public class Patient {
 
     public Patient() {
         assignIdAndOrder();
+        this.payment = new Payment(this.Name, Payment.getFee(this.Severity));
     }
 
     public Patient(String name, int age, String symptoms, int severity) {
@@ -31,6 +33,7 @@ public class Patient {
         this.Severity = severity;
         this.isSenior = age >= 60;
         assignIdAndOrder();
+        this.payment = new Payment(this.Name, Payment.getFee(this.Severity));
     }
 
     public Patient(String name, int age, String symptoms, int severity,
@@ -45,6 +48,7 @@ public class Patient {
         this.isPregnant = isPregnant;
         this.suggestedSpecialty = suggestedSpecialty;
         assignIdAndOrder();
+        this.payment = new Payment(this.Name, Payment.getFee(this.Severity));
     }
 
     private void assignIdAndOrder() {
@@ -69,19 +73,31 @@ public class Patient {
     public boolean isPregnant() { return isPregnant; }
     public int getArrivalOrder() { return arrivalOrder; }
     public String getSuggestedSpecialty() { return suggestedSpecialty; }
+    public Payment getPayment() { return payment; }
     public int getTicket() { return ticket; }
     public boolean isOnHold() { return onHold; }
     public Appointment getAppointment() { return appointment; }
 
     // setters
-    public void setName(String name) { this.Name = name; }
+    public void setName(String name) {
+        this.Name = name;
+        if (this.payment != null) {
+            this.payment.setPatientName(name);
+        }
+    }
     public void setAge(int age) { this.Age = age; }
     public void setSymptoms(String symptoms) { this.Symptoms = symptoms; }
-    public void setSeverity(int severity) { this.Severity = severity; }
+    public void setSeverity(int severity) {
+        this.Severity = severity;
+        if (this.payment != null) {
+            this.payment.setTotal(Payment.getFee(severity));
+        }
+    }
     public void setSenior(boolean isSenior) { this.isSenior = isSenior; }
     public void setPWD(boolean isPWD) { this.isPWD = isPWD; }
     public void setPregnant(boolean isPregnant) { this.isPregnant = isPregnant; }
     public void setSuggestedSpecialty(String specialty) { this.suggestedSpecialty = specialty; }
+    public void setPayment(Payment payment) { this.payment = payment; }
     public void setTicket(int ticket) { this.ticket = ticket; }
     public void setOnHold(boolean onHold) { this.onHold = onHold; }
     public void setAppointment(Appointment appointment) { this.appointment = appointment; }

@@ -100,8 +100,10 @@ public class QueueManager {
             if (queue[i].isOnHold()) {
                 note = " [on hold]";
             }
-            System.out.println((i + 1) + ". " + queue[i].getName() + " (Age: " + queue[i].getAge() + ") - "
-                    + queue[i].getSymptoms() + " (Severity: " + queue[i].getSeverity() + ")" + note);
+            System.out.println((i + 1) + ". Ticket " + queue[i].getTicket() + " - "
+                    + queue[i].getName() + " (Age: " + queue[i].getAge() + ") - "
+                    + queue[i].getSymptoms() + " (Severity: " + queue[i].getSeverity() + ")"
+                    + " [Payment plan: " + queue[i].getPayment().getPaymentPlan() + "]" + note);
         }
     }
 

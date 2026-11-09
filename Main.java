@@ -11,6 +11,7 @@ public class Main {
     private static final ArrayList<Patient> physicalQueue = new ArrayList<>();
     private static final ArrayList<Patient> patients = new ArrayList<>();
     private static final BookingMenu bookingMenu = new BookingMenu();
+    private static int nextPatientTicket = 1;
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
@@ -79,8 +80,7 @@ public class Main {
             switch (choice) {
                 case 1:
                     p.setAppointment(new WalkInAppointment(null));
-                    enqueuePatientByExpertise(p);
-                    System.out.println("You have been added to the " + getExpertiseName(getDoctorExpertise(p)) + " queue.");
+                    joinQueue(in, p);
                     deciding = false;
                     break;
 
@@ -89,7 +89,7 @@ public class Main {
                     break;
 
                 case 3:
-                    bookingMenu.show(in, p, Main::enqueuePatientByExpertise);
+                    bookingMenu.show(in, p, patient -> joinQueue(in, patient));
                     break;
 
                 case 0:
@@ -203,6 +203,18 @@ public class Main {
         }
     }
 
+    private static void joinQueue(Scanner in, Patient patient) {
+        PaymentMenu.process(in, patient);
+        patient.setTicket(nextPatientTicket++);
+        enqueuePatientByExpertise(patient);
+        System.out.println("\n--- Patient Ticket ---");
+        System.out.println("Ticket number: " + patient.getTicket());
+        System.out.println("Patient: " + patient.getName());
+        System.out.println("Payment plan: " + patient.getPayment().getPaymentPlan());
+        System.out.println("You have been added to the "
+                + getExpertiseName(getDoctorExpertise(patient)) + " queue.");
+    }
+
     private static Patient dequeuePatientForDoctor(Doctor doctor) {
         ArrayList<Patient> queue = getDoctorQueue(doctor);
         if (queue.isEmpty()) {
@@ -269,8 +281,10 @@ public class Main {
         System.out.println("Current patient queue:");
         for (int i = 0; i < queue.size(); i++) {
             Patient patient = queue.get(i);
-            System.out.println((i + 1) + ". " + patient.getName() + " (Age: " + patient.getAge() + ") - "
+            System.out.println((i + 1) + ". Ticket " + patient.getTicket() + " - "
+                    + patient.getName() + " (Age: " + patient.getAge() + ") - "
                     + patient.getSymptoms() + " (Severity: " + patient.getSeverity() + ")"
+                    + " [Payment plan: " + patient.getPayment().getPaymentPlan() + "]"
                     + " [Senior: " + yesNo(patient.isSenior())
                     + ", PWD: " + yesNo(patient.isPWD())
                     + ", Pregnant: " + yesNo(patient.isPregnant()) + "]");
@@ -316,6 +330,12 @@ public class Main {
         System.out.println("\n--- Receipt ---");
         System.out.println("Patient " + p.getName() + " has been seen by the doctor.");
         System.out.println("Diagnosis result and receipt issued. Thank you.");
+
+        if (p.getPayment() == null) {
+            p.setPayment(new Payment(p.getName(), Payment.getFee(p.getSeverity())));
+        }
+        p.getPayment().printReceipt();
+
         if (p.getAppointment() != null) {
             p.getAppointment().setStatus(AppointmentStatus.COMPLETED);
         }
